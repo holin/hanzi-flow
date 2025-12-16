@@ -186,7 +186,7 @@ const App: React.FC = () => {
                 </div>
 
                 {/* Footer Tips - Compact */}
-                <div className="w-full max-w-xl mt-auto mb-10">
+                <div className="w-full max-w-xl mt-3">
                     <div className="p-4 bg-stone-100/80 rounded-lg text-stone-500 text-xs leading-relaxed border border-stone-200/50">
                         <p className="font-bold mb-1 text-stone-700 flex items-center gap-1.5 justify-center sm:justify-start">
                             <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
