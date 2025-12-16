@@ -4,6 +4,14 @@ import { Play, RotateCcw, PenTool, AlertCircle, Volume2 } from 'lucide-react';
 import { HanziWriterInstance } from '../types';
 import { getStrokeData } from '../services/strokeService';
 
+declare global {
+    interface Window {
+        AndroidTTS?: {
+            speak: (text: string) => void;
+        };
+    }
+}
+
 interface HanziPlayerProps {
     char: string;
 }
@@ -40,48 +48,62 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char }) => {
     }, []);
 
     const playAudio = (times: number = 1) => {
+        if ('AndroidTTS' in window) {
+            const speak = (remaining: number) => {
+                if (remaining <= 0) return;
+                window.AndroidTTS.speak(char);
+                if (remaining > 1) {
+                    setTimeout(() => speak(remaining - 1), 1500 + 600); // Increased gap slightly for better clarity
+                }
+            };
+
+            speak(times);
+
+            return;
+        }
+
         if (!('speechSynthesis' in window)) return;
 
         // Cancel any pending speech to ensure fresh start
         window.speechSynthesis.cancel();
-        
+
         const speak = (remaining: number) => {
             if (remaining <= 0) return;
-            
+
             const utterance = new SpeechSynthesisUtterance(char);
             utterance.rate = 0.8; // Slightly slower
-            
+
             // Attempt to find a specific Chinese voice
             const voices = window.speechSynthesis.getVoices();
-            const zhVoice = voices.find(v => v.lang === 'zh-CN') || 
+            const zhVoice = voices.find(v => v.lang === 'zh-CN') ||
                             voices.find(v => v.lang.startsWith('zh'));
-            
+
             if (zhVoice) {
                 utterance.voice = zhVoice;
                 utterance.lang = zhVoice.lang;
             } else {
                 utterance.lang = 'zh-CN';
             }
-            
+
             utterance.onend = () => {
                 if (remaining > 1) {
-                     setTimeout(() => speak(remaining - 1), 600); // Increased gap slightly for better clarity
+                    setTimeout(() => speak(remaining - 1), 600); // Increased gap slightly for better clarity
                 }
             };
-            
+
             utterance.onerror = (e) => {
                 console.warn("TTS playback error", e);
             };
 
             window.speechSynthesis.speak(utterance);
         };
-        
+
         speak(times);
     };
 
     useEffect(() => {
         if (!divRef.current) return;
-        
+
         let isCancelled = false;
 
         setIsLoading(true);
@@ -104,16 +126,16 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char }) => {
                 strokeColor: '#1a1a1a',
                 outlineColor: '#e5e7eb',
                 charDataLoader: sharedCharDataLoader,
-                
+
                 onLoadCharDataSuccess: () => {
                     if (isCancelled) return;
                     setIsLoading(false);
                     writer.animateCharacter();
-                    
+
                     // Restore auto-play twice
                     // Note: Browsers may block this if the user hasn't interacted with the page yet.
                     try {
-                        playAudio(2); 
+                        playAudio(2);
                     } catch (e) {
                         console.debug("Auto-play blocked or failed", e);
                     }
@@ -188,17 +210,17 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char }) => {
                         <p className="text-stone-500 font-sans text-sm">加载笔画中...</p>
                     </div>
                 )}
-                
+
                 {error ? (
                      <div className="w-[300px] h-[300px] flex flex-col items-center justify-center text-red-500 p-6 text-center">
                         <AlertCircle className="w-12 h-12 mb-2 opacity-50" />
                         <p>{error}</p>
                      </div>
                 ) : (
-                    <div 
-                        ref={divRef} 
+                    <div
+                        ref={divRef}
                         className="w-[300px] h-[300px] cursor-crosshair"
-                        key={char} 
+                        key={char}
                     />
                 )}
 
@@ -214,7 +236,7 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char }) => {
 
             {/* Controls - Grid Layout for side-by-side buttons */}
             <div className="grid grid-cols-4 gap-2 w-[300px] mb-2">
-                <button 
+                <button
                     onClick={handleAnimate}
                     disabled={!!error || isLoading}
                     className={`flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base disabled:opacity-50 ${
@@ -226,7 +248,7 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char }) => {
                     <Play size={18} />
                     <span>演示</span>
                 </button>
-                <button 
+                <button
                     onClick={handleLoop}
                     disabled={!!error || isLoading}
                     className={`flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base disabled:opacity-50 ${
@@ -238,20 +260,20 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char }) => {
                     <RotateCcw size={18} />
                     <span>循环</span>
                 </button>
-                <button 
+                <button
                     onClick={handleQuiz}
                     disabled={!!error || isLoading}
                     className={`flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base disabled:opacity-50 ${
-                        mode === 'quiz' 
-                        ? 'bg-stone-800 text-white shadow-md' 
+                        mode === 'quiz'
+                        ? 'bg-stone-800 text-white shadow-md'
                         : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
                     }`}
                 >
                     <PenTool size={18} />
                     <span>测验</span>
                 </button>
-                <button 
-                    onClick={() => playAudio(2)}
+                <button
+                    onClick={() => playAudio(1)}
                     disabled={!!error || isLoading}
                     className="flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base bg-stone-100 hover:bg-stone-200 text-stone-700 disabled:opacity-50 active:bg-stone-300"
                     title="发音"
@@ -260,7 +282,7 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char }) => {
                     <span>发音</span>
                 </button>
             </div>
-            
+
             <p className="text-xs text-stone-400 font-sans h-4">
                 {mode === 'quiz' ? '请使用鼠标或手指在方格中书写。' : '观看笔顺动画演示。'}
             </p>

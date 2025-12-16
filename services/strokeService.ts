@@ -13,13 +13,13 @@ export const getStrokeData = async (char: string): Promise<any> => {
         }
     }
 
-    const response = await fetch(`https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/${char}.json`);
+    const response = await fetch(`/data/${char}.json`);
     if (!response.ok) {
         throw new Error('Failed to load character data');
     }
-    
+
     const data = await response.json();
-    
+
     try {
         localStorage.setItem(cacheKey, JSON.stringify(data));
     } catch (e) {
