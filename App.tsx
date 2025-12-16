@@ -10,7 +10,7 @@ const App: React.FC = () => {
     const [inputChar, setInputChar] = useState<string>('汉');
     const [displayChar, setDisplayChar] = useState<string>('汉');
     const [history, setHistory] = useState<string[]>([]);
-    
+
     // PWA Install State
     const [showInstallBtn, setShowInstallBtn] = useState(false);
 
@@ -45,10 +45,10 @@ const App: React.FC = () => {
     const handleInstallClick = async () => {
         const promptEvent = window.deferredPrompt;
         if (!promptEvent) return;
-        
+
         promptEvent.prompt();
         const { outcome } = await promptEvent.userChoice;
-        
+
         if (outcome === 'accepted') {
             setShowInstallBtn(false);
             window.deferredPrompt = null;
@@ -63,12 +63,12 @@ const App: React.FC = () => {
             return newHistory;
         });
     };
-    
+
     // PREFETCH LOGIC
     useEffect(() => {
         const trimmed = inputChar.trim();
         if (!trimmed) return;
-        
+
         const potentialChar = trimmed.charAt(0);
         if (!/[\u4e00-\u9fa5]/.test(potentialChar)) return;
 
@@ -111,7 +111,7 @@ const App: React.FC = () => {
                         <h1 className="text-base sm:text-lg font-serif font-bold tracking-tight text-ink-900">Hanzi Flow</h1>
                     </div>
                     {showInstallBtn && (
-                        <button 
+                        <button
                             onClick={handleInstallClick}
                             className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-500 text-white text-xs font-bold rounded-full hover:bg-rose-600 transition-colors shadow-sm"
                         >
@@ -123,7 +123,7 @@ const App: React.FC = () => {
             </header>
 
             <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-4 flex flex-col items-center">
-                
+
                 {/* Hero Search Section - Compact */}
                 <div className="flex flex-col items-center justify-center mb-4 w-full">
                     <div className="text-center mb-3">
@@ -131,7 +131,7 @@ const App: React.FC = () => {
                             汉字笔顺演示
                         </h2>
                     </div>
-                    
+
                     <form onSubmit={handleSearch} className="relative w-full max-w-[280px] group mb-3">
                         <div className="relative">
                             <input
@@ -143,7 +143,7 @@ const App: React.FC = () => {
                                 maxLength={8}
                                 className="w-full pl-4 pr-10 py-2.5 bg-white border border-stone-300 rounded-lg shadow-sm focus:border-rose-500 focus:ring-2 focus:ring-rose-100 focus:outline-none transition-all text-center font-serif text-xl placeholder:text-stone-300 placeholder:text-base placeholder:font-sans text-ink-900"
                             />
-                            <button 
+                            <button
                                 type="submit"
                                 className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1.5 bg-stone-100 rounded-md text-stone-400 hover:bg-rose-500 hover:text-white transition-all shadow-sm"
                                 aria-label="搜索"
@@ -165,8 +165,8 @@ const App: React.FC = () => {
                                         key={char}
                                         onClick={() => handleHistoryClick(char)}
                                         className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-md border text-sm font-serif transition-colors shadow-sm ${
-                                            displayChar === char 
-                                            ? 'bg-stone-800 text-white border-stone-800' 
+                                            displayChar === char
+                                            ? 'bg-stone-800 text-white border-stone-800'
                                             : 'bg-white border-stone-200 text-stone-600 hover:border-rose-300 hover:text-rose-600'
                                         }`}
                                     >
@@ -186,7 +186,7 @@ const App: React.FC = () => {
                 </div>
 
                 {/* Footer Tips - Compact */}
-                <div className="w-full max-w-xl mt-auto mb-4">
+                <div className="w-full max-w-xl mt-auto mb-10">
                     <div className="p-4 bg-stone-100/80 rounded-lg text-stone-500 text-xs leading-relaxed border border-stone-200/50">
                         <p className="font-bold mb-1 text-stone-700 flex items-center gap-1.5 justify-center sm:justify-start">
                             <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
