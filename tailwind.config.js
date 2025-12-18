@@ -21,7 +21,7 @@ export default {
           50: '#fdfbf7',
           100: '#f7f3e8',
           200: '#efe6d0',
-        }
+        },
       }
     }
   },
