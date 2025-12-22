@@ -30,7 +30,10 @@ const App: React.FC = () => {
         const savedFavorites = localStorage.getItem(FAVORITES_KEY);
         if (savedFavorites) {
             try {
-                setFavorites(JSON.parse(savedFavorites));
+                const parsed = JSON.parse(savedFavorites);
+                if (Array.isArray(parsed)) {
+                    setFavorites(parsed.slice(0, 8));
+                }
             } catch (e) {
                 console.error("Failed to parse favorites", e);
             }
@@ -81,7 +84,7 @@ const App: React.FC = () => {
             if (prev.includes(char)) {
                 newFavorites = prev.filter(c => c !== char);
             } else {
-                newFavorites = [char, ...prev].slice(0, 24);
+                newFavorites = [char, ...prev].slice(0, 8);
             }
             localStorage.setItem(FAVORITES_KEY, JSON.stringify(newFavorites));
             return newFavorites;
@@ -152,28 +155,6 @@ const App: React.FC = () => {
                         </button>
                     )}
 
-                    {/* Favorites Chips */}
-                    {favorites.length > 0 && (
-                        <div className="flex items-center gap-2 max-w-[340px] overflow-x-auto mt-2 pb-1 px-1 no-scrollbar justify-center">
-                            <span className="text-rose-400 flex-shrink-0" title="收藏">
-                                <Heart size={14} fill="currentColor" />
-                            </span>
-                            <div className="flex gap-1.5">
-                                {favorites.map((char) => (
-                                    <button
-                                        key={char}
-                                        onClick={() => handleFavoriteClick(char)}
-                                        className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-md border text-sm font-serif transition-colors shadow-sm ${displayChar === char
-                                                ? 'bg-rose-500 text-white border-rose-500'
-                                                : 'bg-white border-stone-200 text-stone-600 hover:border-rose-300 hover:text-rose-600'
-                                            }`}
-                                    >
-                                        {char}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                 </div>
             </header>
 
