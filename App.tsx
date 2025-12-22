@@ -75,7 +75,7 @@ const App: React.FC = () => {
         });
     };
 
-        const toggleFavorite = (char: string) => {
+    const toggleFavorite = (char: string) => {
         setFavorites(prev => {
             let newFavorites;
             if (prev.includes(char)) {
@@ -163,11 +163,10 @@ const App: React.FC = () => {
                                     <button
                                         key={char}
                                         onClick={() => handleFavoriteClick(char)}
-                                        className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-md border text-sm font-serif transition-colors shadow-sm ${
-                                            displayChar === char
-                                            ? 'bg-rose-500 text-white border-rose-500'
-                                            : 'bg-white border-stone-200 text-stone-600 hover:border-rose-300 hover:text-rose-600'
-                                        }`}
+                                        className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-md border text-sm font-serif transition-colors shadow-sm ${displayChar === char
+                                                ? 'bg-rose-500 text-white border-rose-500'
+                                                : 'bg-white border-stone-200 text-stone-600 hover:border-rose-300 hover:text-rose-600'
+                                            }`}
                                     >
                                         {char}
                                     </button>
@@ -209,7 +208,7 @@ const App: React.FC = () => {
                         </div>
                     </form>
 
-                     {/* History Chips */}
+                    {/* History Chips */}
                     {history.length > 0 && (
                         <div className="flex items-center gap-2 max-w-[340px] overflow-x-auto pb-1 px-1 no-scrollbar justify-center">
                             <span className="text-stone-400 flex-shrink-0" title="历史记录">
@@ -220,11 +219,10 @@ const App: React.FC = () => {
                                     <button
                                         key={char}
                                         onClick={() => handleHistoryClick(char)}
-                                        className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-md border text-sm font-serif transition-colors shadow-sm ${
-                                            displayChar === char
-                                            ? 'bg-stone-800 text-white border-stone-800'
-                                            : 'bg-white border-stone-200 text-stone-600 hover:border-rose-300 hover:text-rose-600'
-                                        }`}
+                                        className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-md border text-sm font-serif transition-colors shadow-sm ${displayChar === char
+                                                ? 'bg-stone-800 text-white border-stone-800'
+                                                : 'bg-white border-stone-200 text-stone-600 hover:border-rose-300 hover:text-rose-600'
+                                            }`}
                                     >
                                         {char}
                                     </button>
@@ -244,11 +242,10 @@ const App: React.FC = () => {
                                     <button
                                         key={char}
                                         onClick={() => handleFavoriteClick(char)}
-                                        className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-md border text-sm font-serif transition-colors shadow-sm ${
-                                            displayChar === char
-                                            ? 'bg-rose-500 text-white border-rose-500'
-                                            : 'bg-white border-stone-200 text-stone-600 hover:border-rose-300 hover:text-rose-600'
-                                        }`}
+                                        className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-md border text-sm font-serif transition-colors shadow-sm ${displayChar === char
+                                                ? 'bg-rose-500 text-white border-rose-500'
+                                                : 'bg-white border-stone-200 text-stone-600 hover:border-rose-300 hover:text-rose-600'
+                                            }`}
                                     >
                                         {char}
                                     </button>
@@ -261,10 +258,10 @@ const App: React.FC = () => {
                 {/* Player Section - Compact Card */}
                 <div className="w-full max-w-[360px] mb-6">
                     <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-200 flex flex-col items-center">
-                                                <HanziPlayer 
-                            char={displayChar} 
-                            isFavorite={isFavorite} 
-                            onToggleFavorite={() => toggleFavorite(displayChar)} 
+                        <HanziPlayer
+                            char={displayChar}
+                            isFavorite={isFavorite}
+                            onToggleFavorite={() => toggleFavorite(displayChar)}
                         />
                     </div>
                 </div>

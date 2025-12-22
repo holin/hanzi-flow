@@ -78,7 +78,7 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
             // Attempt to find a specific Chinese voice
             const voices = window.speechSynthesis.getVoices();
             const zhVoice = voices.find(v => v.lang === 'zh-CN') ||
-                            voices.find(v => v.lang.startsWith('zh'));
+                voices.find(v => v.lang.startsWith('zh'));
 
             if (zhVoice) {
                 utterance.voice = zhVoice;
@@ -195,7 +195,7 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
                 onComplete: (summary) => {
                     setQuizMessage(`太棒了！错误数: ${summary.totalMistakes}`);
                     setTimeout(() => {
-                         if(mode === 'quiz') writerRef.current?.animateCharacter();
+                        if (mode === 'quiz') writerRef.current?.animateCharacter();
                     }, 1000);
                 }
             });
@@ -214,10 +214,10 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
                 )}
 
                 {error ? (
-                     <div className="w-[300px] h-[300px] flex flex-col items-center justify-center text-red-500 p-6 text-center">
+                    <div className="w-[300px] h-[300px] flex flex-col items-center justify-center text-red-500 p-6 text-center">
                         <AlertCircle className="w-12 h-12 mb-2 opacity-50" />
                         <p>{error}</p>
-                     </div>
+                    </div>
                 ) : (
                     <div
                         ref={divRef}
@@ -253,11 +253,10 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
                 <button
                     onClick={handleAnimate}
                     disabled={!!error || isLoading}
-                    className={`flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base disabled:opacity-50 ${
-                        mode === 'view' && !isLooping
-                        ? 'bg-stone-200 text-stone-900'
-                        : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
-                    }`}
+                    className={`flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base disabled:opacity-50 ${mode === 'view' && !isLooping
+                            ? 'bg-stone-200 text-stone-900'
+                            : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
+                        }`}
                 >
                     <Play size={18} />
                     <span>演示</span>
@@ -265,11 +264,10 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
                 <button
                     onClick={handleLoop}
                     disabled={!!error || isLoading}
-                    className={`flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base disabled:opacity-50 ${
-                        isLooping
-                        ? 'bg-rose-100 text-rose-700 ring-2 ring-rose-200'
-                        : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
-                    }`}
+                    className={`flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base disabled:opacity-50 ${isLooping
+                            ? 'bg-rose-100 text-rose-700 ring-2 ring-rose-200'
+                            : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
+                        }`}
                 >
                     <RotateCcw size={18} />
                     <span>循环</span>
@@ -277,11 +275,10 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
                 <button
                     onClick={handleQuiz}
                     disabled={!!error || isLoading}
-                    className={`flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base disabled:opacity-50 ${
-                        mode === 'quiz'
-                        ? 'bg-stone-800 text-white shadow-md'
-                        : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
-                    }`}
+                    className={`flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base disabled:opacity-50 ${mode === 'quiz'
+                            ? 'bg-stone-800 text-white shadow-md'
+                            : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
+                        }`}
                 >
                     <PenTool size={18} />
                     <span>测验</span>
