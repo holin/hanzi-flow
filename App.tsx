@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import HanziPlayer from './components/HanziPlayer';
 import { prefetchStrokeData } from './services/strokeService';
-import { PenLine, ArrowRight, Clock, Download } from 'lucide-react';
+import { PenLine, ArrowRight, Clock, Download, Heart } from 'lucide-react';
 
 const HISTORY_KEY = 'hanzi_flow_history';
+const FAVORITES_KEY = 'hanzi_flow_favorites';
 
 const App: React.FC = () => {
     // Default to '汉'
     const [inputChar, setInputChar] = useState<string>('汉');
     const [displayChar, setDisplayChar] = useState<string>('汉');
     const [history, setHistory] = useState<string[]>([]);
+    const [favorites, setFavorites] = useState<string[]>([]);
 
     // PWA Install State
     const [showInstallBtn, setShowInstallBtn] = useState(false);
@@ -22,6 +24,15 @@ const App: React.FC = () => {
                 setHistory(JSON.parse(saved));
             } catch (e) {
                 console.error("Failed to parse history", e);
+            }
+        }
+
+        const savedFavorites = localStorage.getItem(FAVORITES_KEY);
+        if (savedFavorites) {
+            try {
+                setFavorites(JSON.parse(savedFavorites));
+            } catch (e) {
+                console.error("Failed to parse favorites", e);
             }
         }
 
@@ -64,6 +75,21 @@ const App: React.FC = () => {
         });
     };
 
+        const toggleFavorite = (char: string) => {
+        setFavorites(prev => {
+            let newFavorites;
+            if (prev.includes(char)) {
+                newFavorites = prev.filter(c => c !== char);
+            } else {
+                newFavorites = [char, ...prev].slice(0, 24);
+            }
+            localStorage.setItem(FAVORITES_KEY, JSON.stringify(newFavorites));
+            return newFavorites;
+        });
+    };
+
+    const isFavorite = favorites.includes(displayChar);
+
     // PREFETCH LOGIC
     useEffect(() => {
         const trimmed = inputChar.trim();
@@ -99,6 +125,12 @@ const App: React.FC = () => {
         addToHistory(char);
     };
 
+    const handleFavoriteClick = (char: string) => {
+        setDisplayChar(char);
+        setInputChar(char);
+        addToHistory(char);
+    };
+
     return (
         <div className="min-h-screen bg-paper-50 text-ink-800 font-sans selection:bg-rose-100 selection:text-rose-900 flex flex-col">
             {/* Header */}
@@ -118,6 +150,30 @@ const App: React.FC = () => {
                             <Download size={14} />
                             安装 App
                         </button>
+                    )}
+
+                    {/* Favorites Chips */}
+                    {favorites.length > 0 && (
+                        <div className="flex items-center gap-2 max-w-[340px] overflow-x-auto mt-2 pb-1 px-1 no-scrollbar justify-center">
+                            <span className="text-rose-400 flex-shrink-0" title="收藏">
+                                <Heart size={14} fill="currentColor" />
+                            </span>
+                            <div className="flex gap-1.5">
+                                {favorites.map((char) => (
+                                    <button
+                                        key={char}
+                                        onClick={() => handleFavoriteClick(char)}
+                                        className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-md border text-sm font-serif transition-colors shadow-sm ${
+                                            displayChar === char
+                                            ? 'bg-rose-500 text-white border-rose-500'
+                                            : 'bg-white border-stone-200 text-stone-600 hover:border-rose-300 hover:text-rose-600'
+                                        }`}
+                                    >
+                                        {char}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     )}
                 </div>
             </header>
@@ -176,12 +232,40 @@ const App: React.FC = () => {
                             </div>
                         </div>
                     )}
+
+                    {/* Favorites Chips */}
+                    {favorites.length > 0 && (
+                        <div className="flex items-center gap-2 max-w-[340px] overflow-x-auto mt-2 pb-1 px-1 no-scrollbar justify-center">
+                            <span className="text-rose-400 flex-shrink-0" title="收藏">
+                                <Heart size={14} fill="currentColor" />
+                            </span>
+                            <div className="flex gap-1.5">
+                                {favorites.map((char) => (
+                                    <button
+                                        key={char}
+                                        onClick={() => handleFavoriteClick(char)}
+                                        className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-md border text-sm font-serif transition-colors shadow-sm ${
+                                            displayChar === char
+                                            ? 'bg-rose-500 text-white border-rose-500'
+                                            : 'bg-white border-stone-200 text-stone-600 hover:border-rose-300 hover:text-rose-600'
+                                        }`}
+                                    >
+                                        {char}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Player Section - Compact Card */}
                 <div className="w-full max-w-[360px] mb-6">
                     <div className="bg-white p-4 rounded-xl shadow-sm border border-stone-200 flex flex-col items-center">
-                        <HanziPlayer char={displayChar} />
+                                                <HanziPlayer 
+                            char={displayChar} 
+                            isFavorite={isFavorite} 
+                            onToggleFavorite={() => toggleFavorite(displayChar)} 
+                        />
                     </div>
                 </div>
 

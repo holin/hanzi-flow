@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import HanziWriter from 'hanzi-writer';
-import { Play, RotateCcw, PenTool, AlertCircle, Volume2 } from 'lucide-react';
+import { Play, RotateCcw, PenTool, AlertCircle, Volume2, Heart } from 'lucide-react';
 import { HanziWriterInstance } from '../types';
 import { getStrokeData } from '../services/strokeService';
 
@@ -14,6 +14,8 @@ declare global {
 
 interface HanziPlayerProps {
     char: string;
+    isFavorite?: boolean;
+    onToggleFavorite?: () => void;
 }
 
 const sharedCharDataLoader = (char: string, onComplete: (data: any) => void, onErr: (msg: any) => void) => {
@@ -22,7 +24,7 @@ const sharedCharDataLoader = (char: string, onComplete: (data: any) => void, onE
         .catch(onErr);
 };
 
-const HanziPlayer: React.FC<HanziPlayerProps> = ({ char }) => {
+const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFavorite }) => {
     const writerRef = useRef<HanziWriterInstance | null>(null);
     const divRef = useRef<HTMLDivElement>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -232,6 +234,18 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char }) => {
                         </span>
                     </div>
                 )}
+
+                {/* Favorite Button */}
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleFavorite?.();
+                    }}
+                    className="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/80 backdrop-blur-sm border border-stone-100 shadow-sm text-rose-500 hover:scale-110 transition-all active:scale-95"
+                    title={isFavorite ? "取消收藏" : "加入收藏"}
+                >
+                    <Heart size={20} fill={isFavorite ? "currentColor" : "none"} />
+                </button>
             </div>
 
             {/* Controls - Grid Layout for side-by-side buttons */}
