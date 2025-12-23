@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(xargs basename:*)",
+      "Bash(xargs -I {} bash -c 'echo -n \"\"\"\"{}\"\"\"\" | python3 -c \"\"\"\"import sys; print\\(sys.stdin.read\\(\\).strip\\(\\), end=\\\\\"\"\"\"\\\\\"\"\"\"\\)\"\"\"\"')",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "WebSearch",
+      "mcp__web-reader__webReader",
+      "Bash(curl:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}
