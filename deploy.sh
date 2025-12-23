@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Building for production..."
+npm run build
+
 # Define paths
 ANDROID_ASSETS_DIR="/Users/holin/AndroidStudioProjects/HanziFlow/app/src/main/assets/www"
 
