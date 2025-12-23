@@ -123,6 +123,16 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
 
         divRef.current.innerHTML = '';
 
+        // Cancel any ongoing animation in the previous writer
+        if (writerRef.current) {
+            try {
+                writerRef.current.cancelQuiz();
+            } catch (e) {
+                // Ignore errors from cleanup
+            }
+            writerRef.current = null;
+        }
+
         try {
             const writer = HanziWriter.create(divRef.current, char, {
                 width: 300,
@@ -176,7 +186,14 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
 
         return () => {
             isCancelled = true;
-            writerRef.current = null;
+            if (writerRef.current) {
+                try {
+                    writerRef.current.cancelQuiz();
+                } catch (e) {
+                    // Ignore errors from cleanup
+                }
+                writerRef.current = null;
+            }
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
             }
@@ -223,6 +240,7 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
         <div className="flex flex-col items-center w-full max-w-md mx-auto">
             {/* Display Area */}
             <div className="relative bg-white border-2 border-stone-200 rounded-xl shadow-sm mb-4 overflow-hidden">
+                {/* Loading Overlay */}
                 {isLoading && (
                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm">
                         <div className="hanzi-loader mb-2"></div>
@@ -230,18 +248,20 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
                     </div>
                 )}
 
-                {error ? (
-                    <div className="w-[300px] h-[300px] flex flex-col items-center justify-center text-red-500 p-6 text-center">
+                {/* Error Overlay */}
+                {error && (
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm text-red-500 p-6 text-center">
                         <AlertCircle className="w-12 h-12 mb-2 opacity-50" />
                         <p>{error}</p>
                     </div>
-                ) : (
-                    <div
-                        ref={divRef}
-                        className="w-[300px] h-[300px] cursor-crosshair"
-                        key={char}
-                    />
                 )}
+
+                {/* Writer Container - always present in DOM */}
+                <div
+                    ref={divRef}
+                    className="w-[300px] h-[300px] cursor-crosshair"
+                    key={char}
+                />
 
                 {/* Quiz Feedback Overlay */}
                 {mode === 'quiz' && quizMessage && (

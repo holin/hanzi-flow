@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HanziPlayer from './components/HanziPlayer';
 import { prefetchStrokeData } from './services/strokeService';
-import { PenLine, ArrowRight, Clock, Download, Heart } from 'lucide-react';
+import { PenLine, ArrowRight, Clock, Download, Heart, RefreshCw } from 'lucide-react';
 
 const HISTORY_KEY = 'hanzi_flow_history';
 const FAVORITES_KEY = 'hanzi_flow_favorites';
@@ -145,6 +145,13 @@ const App: React.FC = () => {
                         </div>
                         <h1 className="text-base sm:text-lg font-serif font-bold tracking-tight text-ink-900">汉字笔顺演示</h1>
                     </div>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="p-2 rounded-lg text-stone-500 hover:bg-stone-100 hover:text-stone-800 transition-all active:scale-95"
+                        title="刷新页面"
+                    >
+                        <RefreshCw size={18} />
+                    </button>
                 </div>
             </header>
 
