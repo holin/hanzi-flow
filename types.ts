@@ -27,18 +27,3 @@ export interface HanziWriterInstance {
     showCharacter: () => void;
     setCharacter: (char: string) => void;
 }
-
-// AI Response types
-export interface VocabularyExample {
-    word: string;
-    pinyin: string;
-    meaning: string;
-}
-
-export interface CharacterDetails {
-    character: string;
-    pinyin: string;
-    definition: string;
-    etymology: string; // Brief history/origin
-    examples: VocabularyExample[];
-}

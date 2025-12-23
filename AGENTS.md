@@ -33,7 +33,7 @@ Welcome to the Hanzi Flow contributor guide. This document outlines the standard
 
 - The project currently does not have a formal testing suite.
 - Contributors should verify changes manually by running `npm run dev` and testing across different Chinese characters.
-- Ensure that the Gemini API integration handles network errors gracefully.
+
 
 ## Commit & Pull Request Guidelines
 
