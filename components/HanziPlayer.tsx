@@ -152,7 +152,10 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
                     if (wasInQuizMode) {
                         writer.quiz({
                             onComplete: (summary) => {
-                                setQuizMessage(`太棒了！错误数: ${summary.totalMistakes}`);
+                                const message = summary.totalMistakes > 5
+                                    ? `错得有点多哦，错误数: ${summary.totalMistakes}`
+                                    : `太棒了！错误数: ${summary.totalMistakes}`;
+                                setQuizMessage(message);
                                 setTimeout(() => {
                                     // After quiz, if still in quiz mode, do not animate.
                                 }, 1000);
@@ -227,7 +230,10 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
             setQuizMessage('请跟随笔画书写！');
             writerRef.current.quiz({
                 onComplete: (summary) => {
-                    setQuizMessage(`太棒了！错误数: ${summary.totalMistakes}`);
+                    const message = summary.totalMistakes > 5
+                        ? `错的有点多哦，错误数: ${summary.totalMistakes}`
+                        : `太棒了！错误数: ${summary.totalMistakes}`;
+                    setQuizMessage(message);
                     setTimeout(() => {
                         // After quiz, do nothing, remain in quiz mode.
                     }, 1000);
