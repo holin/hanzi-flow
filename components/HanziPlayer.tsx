@@ -103,16 +103,23 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
         speak(times);
     };
 
+    const prevCharRef = useRef<string | null>(null);
+
     useEffect(() => {
         if (!divRef.current) return;
 
         let isCancelled = false;
+        const wasInQuizMode = mode === 'quiz';
 
         setIsLoading(true);
         setError(null);
-        setMode('view');
         setIsLooping(false);
         setQuizMessage('');
+
+        // Only reset mode to 'view' if we weren't in quiz mode before, or if it's the very first load
+        if (!wasInQuizMode || prevCharRef.current === null) {
+            setMode('view');
+        }
 
         divRef.current.innerHTML = '';
 
@@ -132,14 +139,23 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
                 onLoadCharDataSuccess: () => {
                     if (isCancelled) return;
                     setIsLoading(false);
-                    writer.animateCharacter();
-
-                    // Restore auto-play twice
-                    // Note: Browsers may block this if the user hasn't interacted with the page yet.
-                    try {
-                        playAudio(2);
-                    } catch (e) {
-                        console.debug("Auto-play blocked or failed", e);
+                    if (wasInQuizMode) {
+                        writer.quiz({
+                            onComplete: (summary) => {
+                                setQuizMessage(`太棒了！错误数: ${summary.totalMistakes}`);
+                                setTimeout(() => {
+                                    // After quiz, if still in quiz mode, do not animate.
+                                }, 1000);
+                            }
+                        });
+                        setMode('quiz'); // Ensure mode is set to quiz if it wasn't already
+                    } else {
+                        writer.animateCharacter();
+                        try {
+                            playAudio(2);
+                        } catch (e) {
+                            console.debug("Auto-play blocked or failed", e);
+                        }
                     }
                 },
                 onLoadCharDataError: (err) => {
@@ -151,6 +167,7 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
             });
 
             writerRef.current = (writer as unknown) as HanziWriterInstance;
+            prevCharRef.current = char; // Update prevCharRef after successful creation
         } catch (e) {
             console.error("HanziWriter init error", e);
             setError("初始化失败。");
@@ -195,7 +212,7 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
                 onComplete: (summary) => {
                     setQuizMessage(`太棒了！错误数: ${summary.totalMistakes}`);
                     setTimeout(() => {
-                        if (mode === 'quiz') writerRef.current?.animateCharacter();
+                        // After quiz, do nothing, remain in quiz mode.
                     }, 1000);
                 }
             });

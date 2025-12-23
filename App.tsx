@@ -143,18 +143,8 @@ const App: React.FC = () => {
                         <div className="bg-stone-900 text-white p-1.5 rounded-lg">
                             <PenLine size={16} className="sm:w-4 sm:h-4" />
                         </div>
-                        <h1 className="text-base sm:text-lg font-serif font-bold tracking-tight text-ink-900">Hanzi Flow</h1>
+                        <h1 className="text-base sm:text-lg font-serif font-bold tracking-tight text-ink-900">汉字笔顺演示</h1>
                     </div>
-                    {showInstallBtn && (
-                        <button
-                            onClick={handleInstallClick}
-                            className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-500 text-white text-xs font-bold rounded-full hover:bg-rose-600 transition-colors shadow-sm"
-                        >
-                            <Download size={14} />
-                            安装 App
-                        </button>
-                    )}
-
                 </div>
             </header>
 
@@ -162,12 +152,6 @@ const App: React.FC = () => {
 
                 {/* Hero Search Section - Compact */}
                 <div className="flex flex-col items-center justify-center mb-4 w-full">
-                    <div className="text-center mb-3">
-                        <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink-900 mb-1">
-                            汉字笔顺演示
-                        </h2>
-                    </div>
-
                     <form onSubmit={handleSearch} className="relative w-full max-w-[280px] group mb-3">
                         <div className="relative">
                             <input
