@@ -290,43 +290,43 @@ const HanziPlayer: React.FC<HanziPlayerProps> = ({ char, isFavorite, onToggleFav
                 <button
                     onClick={handleAnimate}
                     disabled={!!error || isLoading}
-                    className={`flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base disabled:opacity-50 ${mode === 'view' && !isLooping
+                    className={`flex items-center justify-center gap-1 px-1 py-2 rounded-lg transition-colors font-medium text-xs disabled:opacity-50 ${mode === 'view' && !isLooping
                             ? 'bg-stone-200 text-stone-900'
                             : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
                         }`}
                 >
-                    <Play size={18} />
+                    <Play size={16} />
                     <span>演示</span>
                 </button>
                 <button
                     onClick={handleLoop}
                     disabled={!!error || isLoading}
-                    className={`flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base disabled:opacity-50 ${isLooping
+                    className={`flex items-center justify-center gap-1 px-1 py-2 rounded-lg transition-colors font-medium text-xs disabled:opacity-50 ${isLooping
                             ? 'bg-rose-100 text-rose-700 ring-2 ring-rose-200'
                             : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
                         }`}
                 >
-                    <RotateCcw size={18} />
+                    <RotateCcw size={16} />
                     <span>循环</span>
                 </button>
                 <button
                     onClick={handleQuiz}
                     disabled={!!error || isLoading}
-                    className={`flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base disabled:opacity-50 ${mode === 'quiz'
+                    className={`flex items-center justify-center gap-1 px-1 py-2 rounded-lg transition-colors font-medium text-xs disabled:opacity-50 ${mode === 'quiz'
                             ? 'bg-stone-800 text-white shadow-md'
                             : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
                         }`}
                 >
-                    <PenTool size={18} />
+                    <PenTool size={16} />
                     <span>测验</span>
                 </button>
                 <button
                     onClick={() => playAudio(1)}
                     disabled={!!error || isLoading}
-                    className="flex items-center justify-center gap-1 sm:gap-2 px-1 py-2.5 rounded-lg transition-colors font-medium text-sm sm:text-base bg-stone-100 hover:bg-stone-200 text-stone-700 disabled:opacity-50 active:bg-stone-300"
+                    className="flex items-center justify-center gap-1 px-1 py-2 rounded-lg transition-colors font-medium text-xs bg-stone-100 hover:bg-stone-200 text-stone-700 disabled:opacity-50 active:bg-stone-300"
                     title="发音"
                 >
-                    <Volume2 size={18} />
+                    <Volume2 size={16} />
                     <span>发音</span>
                 </button>
             </div>
