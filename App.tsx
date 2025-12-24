@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import HanziPlayer from './components/HanziPlayer';
 import { prefetchStrokeData } from './services/strokeService';
-import { PenLine, ArrowRight, Clock, Download, Heart, RefreshCw } from 'lucide-react';
+import { PenLine, ArrowRight, Clock, Download, Heart, RefreshCw, X } from 'lucide-react';
 
 const HISTORY_KEY = 'hanzi_flow_history';
 const FAVORITES_KEY = 'hanzi_flow_favorites';
@@ -15,6 +15,11 @@ const App: React.FC = () => {
 
     // PWA Install State
     const [showInstallBtn, setShowInstallBtn] = useState(false);
+
+    // Character selection modal state
+    const [showCharSelector, setShowCharSelector] = useState(false);
+    const [availableChars, setAvailableChars] = useState<string[]>([]);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     // Load history and check PWA status
     useEffect(() => {
@@ -98,12 +103,19 @@ const App: React.FC = () => {
         const trimmed = inputChar.trim();
         if (!trimmed) return;
 
-        const potentialChar = trimmed.charAt(0);
-        if (!/[\u4e00-\u9fa5]/.test(potentialChar)) return;
+        // Extract all Chinese characters from input
+        const chineseChars = trimmed.match(/[\u4e00-\u9fa5]/g) || [];
+        if (chineseChars.length === 0) return;
 
+        // If multiple Chinese characters, show selector
+        if (chineseChars.length > 1) {
+            setAvailableChars(chineseChars);
+            setShowCharSelector(true);
+        }
+
+        // Prefetch first character
         const timeoutId = setTimeout(() => {
-            console.log(`Prefetching data for: ${potentialChar}`);
-            prefetchStrokeData(potentialChar);
+            prefetchStrokeData(chineseChars[0]);
         }, 600);
 
         return () => clearTimeout(timeoutId);
@@ -113,13 +125,32 @@ const App: React.FC = () => {
         e.preventDefault();
         const trimmed = inputChar.trim();
         if (trimmed) {
-            const firstChar = trimmed.charAt(0);
-            if (/[\u4e00-\u9fa5]/.test(firstChar)) {
-                setDisplayChar(firstChar);
-                setInputChar(firstChar);
-                addToHistory(firstChar);
+            const chineseChars = trimmed.match(/[\u4e00-\u9fa5]/g) || [];
+            if (chineseChars.length > 1) {
+                // Show selector for multiple characters
+                setAvailableChars(chineseChars);
+                setShowCharSelector(true);
+            } else if (chineseChars.length === 1) {
+                // Direct display for single character
+                const char = chineseChars[0];
+                setDisplayChar(char);
+                setInputChar(char);
+                addToHistory(char);
             }
         }
+    };
+
+    const handleCharSelect = (char: string) => {
+        setDisplayChar(char);
+        setInputChar(char);
+        addToHistory(char);
+        setShowCharSelector(false);
+        setAvailableChars([]);
+    };
+
+    const handleCloseSelector = () => {
+        setShowCharSelector(false);
+        setAvailableChars([]);
     };
 
     const handleHistoryClick = (char: string) => {
@@ -162,6 +193,7 @@ const App: React.FC = () => {
                     <form onSubmit={handleSearch} className="relative w-full max-w-[280px] group mb-3">
                         <div className="relative">
                             <input
+                                ref={inputRef}
                                 type="text"
                                 value={inputChar}
                                 onChange={(e) => setInputChar(e.target.value)}
@@ -252,6 +284,42 @@ const App: React.FC = () => {
                 </div>
 
             </main>
+
+            {/* Character Selection Modal */}
+            {showCharSelector && (
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 animate-[fadeIn_0.2s_ease-out]">
+                        {/* Header */}
+                        <div className="flex items-center justify-between mb-5">
+                            <h3 className="text-lg font-serif font-bold text-stone-800">选择汉字</h3>
+                            <button
+                                onClick={handleCloseSelector}
+                                className="p-1.5 rounded-lg hover:bg-stone-100 text-stone-400 hover:text-stone-700 transition-colors"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        {/* Character Grid */}
+                        <div className="grid grid-cols-4 gap-3">
+                            {availableChars.map((char, index) => (
+                                <button
+                                    key={`${char}-${index}`}
+                                    onClick={() => handleCharSelect(char)}
+                                    className="aspect-square flex items-center justify-center rounded-xl bg-stone-50 border-2 border-stone-200 hover:border-rose-400 hover:bg-rose-50 text-3xl font-serif text-stone-800 hover:text-rose-600 transition-all active:scale-95 shadow-sm"
+                                >
+                                    {char}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Footer Tip */}
+                        <p className="text-xs text-stone-400 text-center mt-4">
+                            点击汉字查看笔顺演示
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -10,7 +10,10 @@
       "mcp__web-reader__webReader",
       "Bash(curl:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run)",
+      "Bash(./deploy.sh:*)"
     ]
   }
 }
